@@ -1,20 +1,62 @@
-<!--The whole content below can be removed with the new code.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!!
-  </h1>
-  <img width="300" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAyNTAgMjUwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNTAgMjUwOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojREQwMDMxO30NCgkuc3Qxe2ZpbGw6I0MzMDAyRjt9DQoJLnN0MntmaWxsOiNGRkZGRkY7fQ0KPC9zdHlsZT4NCjxnPg0KCTxwb2x5Z29uIGNsYXNzPSJzdDAiIHBvaW50cz0iMTI1LDMwIDEyNSwzMCAxMjUsMzAgMzEuOSw2My4yIDQ2LjEsMTg2LjMgMTI1LDIzMCAxMjUsMjMwIDEyNSwyMzAgMjAzLjksMTg2LjMgMjE4LjEsNjMuMiAJIi8+DQoJPHBvbHlnb24gY2xhc3M9InN0MSIgcG9pbnRzPSIxMjUsMzAgMTI1LDUyLjIgMTI1LDUyLjEgMTI1LDE1My40IDEyNSwxNTMuNCAxMjUsMjMwIDEyNSwyMzAgMjAzLjksMTg2LjMgMjE4LjEsNjMuMiAxMjUsMzAgCSIvPg0KCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0xMjUsNTIuMUw2Ni44LDE4Mi42aDBoMjEuN2gwbDExLjctMjkuMmg0OS40bDExLjcsMjkuMmgwaDIxLjdoMEwxMjUsNTIuMUwxMjUsNTIuMUwxMjUsNTIuMUwxMjUsNTIuMQ0KCQlMMTI1LDUyLjF6IE0xNDIsMTM1LjRIMTA4bDE3LTQwLjlMMTQyLDEzNS40eiIvPg0KPC9nPg0KPC9zdmc+DQo=" />
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" href="http://angularjs.blogspot.ca/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="widgets">
+  <a class="button main add" [class.adding]="model.adding" (click)="model.startAdd()"><i class="icon-add"></i>Add new widget</a>        
+  <h2>Widgets</h2>
 
+  <div class="row loading" *ngIf="!model.loaded">
+    <div colspan="3">
+      <i class="status icon-spinner animate-spin"></i>Loading...
+    </div>
+  </div>
+  <div *ngIf="model.loaded">
+    <div class="row add" *ngIf="model.adding">
+      <div class="name">
+        <input type="text" class="full" placeholder="Widget name"
+                [value]="model.adding.name" (change)="model.adding.name = $event.target.value" (keyup)="model.adding.name = $event.target.value" />
+      </div>
+      <div class="price">
+        &pound;
+        <input type="text" class="number" placeholder="Price"
+                [value]="model.adding.price" (change)="model.adding.price = $event.target.value" (keyup)="model.adding.price = $event.target.value" />
+      </div>
+      <div class="action">
+        <a class="button main" (click)="model.confirmAdd()"><i class="icon-ok"></i>Add widget</a>
+        <a class="cancel" (click)="model.cancelAdd()"><i class="icon-cancel"></i></a>
+      </div>
+    </div>
+    <div class="row" *ngIf="!model.adding && !model.widgets.length">
+      <div colspan="3">
+        There are no widgets.
+      </div>
+    </div>
+    <div class="row" *ngFor="let w of model.widgets" [ngClass]="{
+          'adding': w.action == 'add',
+          'deleting': w.action == 'delete',
+          'in-progress': w.status == 'inProgress',
+          'success': w.status == 'success',
+          'error': w.status == 'error',
+          'fadeout': w.status == 'done' && (w.action == 'add' || w.action == 'delete' && model.widgets.length == 1)
+        }">
+      <div class="name">{{w.name}}</div>
+      <div class="price">&pound;{{w.price.toFixed(2)}}</div>
+      <div class="action">
+        <span *ngIf="!w.status || (w.action == 'add' && w.status == 'done')">
+          <a class="button main" (click)="w.delete()"><i class="icon-trash"></i>Delete</a>
+        </span>
+        <span *ngIf="w.status">
+          <i *ngIf="w.status == 'inProgress'" class="status icon-spinner animate-spin"></i>
+          <i *ngIf="w.status == 'success'" class="status icon-ok"></i>
+          <span *ngIf="w.status == 'error' && w.action == 'add'">
+            <abbr class="fail" [title]="w.errorMessage"><i class="status icon-attention"></i>Add failed</abbr>
+            <a class="button main" (click)="w.retryAdd()"><i class="icon-add"></i>Retry</a>
+            <a class="cancel" (click)="w.abandonAdd()"><i class="icon-cancel"></i></a>
+          </span>
+          <span *ngIf="w.status == 'error' && w.action == 'delete'">
+            <abbr class="fail" [title]="w.errorMessage"><i class="status icon-attention"></i>Delete failed</abbr>
+            <a class="button main" (click)="w.delete()"><i class="icon-trash"></i>Retry</a>
+            <a class="cancel" (click)="w.abandonDelete()"><i class="icon-cancel"></i></a>
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

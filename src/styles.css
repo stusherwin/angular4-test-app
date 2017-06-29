@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+body {
+  background-color: #7b8;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+}
+
+h2 {
+  margin-bottom: 15px;
+}
