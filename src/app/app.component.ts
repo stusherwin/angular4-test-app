@@ -114,6 +114,22 @@ export class WidgetModel {
   abandonDelete() {
     this.clear()
   }
+
+  edit(field: string) {
+    this._parent.startEdit(this, field)
+  }
+
+  isEditing(field: string) {
+    return this._parent.isEditing(this, field)
+  }
+
+  cancelEdit() {
+    this._parent.cancelEdit()
+  }
+
+  confirmEdit() {
+    this._parent.cancelEdit()
+  }
 }
 
 export class AddingWidgetModel {
@@ -125,6 +141,8 @@ export class WidgetsModel {
   loaded = false
   adding: AddingWidgetModel
   widgets: WidgetModel[] = []
+  editing: WidgetModel
+  editingField: string
 
   constructor(private _service: WidgetService) {
   }
@@ -191,6 +209,20 @@ export class WidgetsModel {
       e => {
         widget.error(e)
       })
+  }
+
+  startEdit(widget: WidgetModel, field: string) {
+    this.editing = widget
+    this.editingField = field
+  }
+
+  cancelEdit() {
+    this.editing = null
+    this.editingField = null
+  }
+
+  isEditing(widget: WidgetModel, field: string) {
+    return this.editing == widget && this.editingField == field
   }
 }
 

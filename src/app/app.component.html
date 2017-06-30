@@ -9,16 +9,16 @@
   </div>
   <div *ngIf="model.loaded">
     <div class="row add" *ngIf="model.adding">
-      <div class="name">
-        <input type="text" class="full" placeholder="Widget name"
+      <div class="col name">
+        <input type="text" placeholder="Widget name"
                 [value]="model.adding.name" (change)="model.adding.name = $event.target.value" (keyup)="model.adding.name = $event.target.value" />
       </div>
-      <div class="price">
+      <div class="col price">
         &pound;
         <input type="text" class="number" placeholder="Price"
                 [value]="model.adding.price" (change)="model.adding.price = $event.target.value" (keyup)="model.adding.price = $event.target.value" />
       </div>
-      <div class="action">
+      <div class="col action">
         <a class="button main" (click)="model.confirmAdd()"><i class="icon-ok"></i>Add widget</a>
         <a class="cancel" (click)="model.cancelAdd()"><i class="icon-cancel"></i></a>
       </div>
@@ -36,9 +36,28 @@
           'error': w.status == 'error',
           'fadeout': w.status == 'done' && (w.action == 'add' || w.action == 'delete' && model.widgets.length == 1)
         }">
-      <div class="name">{{w.name}}</div>
-      <div class="price">&pound;{{w.price.toFixed(2)}}</div>
-      <div class="action">
+      <div class="col name">
+        <div class="editable" (click)="w.edit('name')" *ngIf="!w.isEditing('name')">
+          <span>{{w.name}}</span>
+        </div>
+        <div class="editing" *ngIf="w.isEditing('name')">
+          <input type="text" [value]="w.name" />
+          <a class="button main" (click)="w.confirmEdit()"><i class="icon-ok"></i>Save</a>
+          <a class="cancel" (click)="w.cancelEdit()"><i class="icon-cancel"></i></a>
+        </div>
+      </div>
+      <div class="col price">
+        <div class="editable" (click)="w.edit('price')" *ngIf="!w.isEditing('price')">
+          <span>&pound;{{w.price.toFixed(2)}}</span>
+        </div>
+        <div class="editing" *ngIf="w.isEditing('price')">
+          &pound;
+          <input type="text" class="number" [value]="w.price" />
+          <a class="button main" (click)="w.confirmEdit()"><i class="icon-ok"></i>Save</a>
+          <a class="cancel" (click)="w.cancelEdit()"><i class="icon-cancel"></i></a>
+        </div>
+      </div>
+      <div class="col action">
         <span *ngIf="!w.status || (w.action == 'add' && w.status == 'done')">
           <a class="button main" (click)="w.delete()"><i class="icon-trash"></i>Delete</a>
         </span>
