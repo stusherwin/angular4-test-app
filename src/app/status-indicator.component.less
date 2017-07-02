@@ -1,0 +1,27 @@
+@import "../styles.less";
+
+.status {
+  &.icon-spinner {
+    color: #aaa;
+  }
+
+  &.icon-ok {
+    color: @success;
+  }
+
+  &.icon-attention {
+    color: @error;
+    cursor: help;
+  }
+}
+
+.fail {
+  color: @error;
+  margin-right: 10px;
+  cursor: help;
+}
+
+:host-context(.fadeout) .status {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}

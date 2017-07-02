@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/throw'  
@@ -61,17 +61,31 @@ export class WidgetService {
     this.fail = false
     return Observable.throw('Could not delete this widget').materialize().delay(3000).dematerialize()
   }
+
+  update(): Observable<void> {
+    if(!this.fail) {
+      this.fail = true
+      
+      return Observable.of(null).delay(3000)
+    }
+
+    this.fail = false
+    return Observable.throw('Could not update this widget').materialize().delay(3000).dematerialize()
+  }
 }
 
 export class WidgetModel {
   action: string
   status: string
   errorMessage: string
+  editingName: string
+  editingPrice: string
 
   constructor(
     public id: number,
     public name: string,
     public price: number,
+    private _service: WidgetService,
     private _parent: WidgetsModel) {
   }
   
@@ -115,20 +129,53 @@ export class WidgetModel {
     this.clear()
   }
 
-  edit(field: string) {
-    this._parent.startEdit(this, field)
+  startEditName() {
+    this.editingName = this.name
+    this._parent.startEdit(this, 'name')
   }
 
-  isEditing(field: string) {
-    return this._parent.isEditing(this, field)
+  get isEditingName() {
+    return this._parent.isEditing(this, 'name')
   }
 
-  cancelEdit() {
+  cancelEditName() {
     this._parent.cancelEdit()
   }
 
-  confirmEdit() {
+  confirmEditName() {
+    this.name = this.editingName
     this._parent.cancelEdit()
+  }
+
+  startEditPrice() {
+    this.editingPrice = this.price.toFixed(2)
+    this._parent.startEdit(this, 'price')
+  }
+
+  get isEditingPrice() {
+    return this._parent.isEditing(this, 'price')
+  }
+
+  cancelEditPrice() {
+    this._parent.cancelEdit()
+  }
+
+  confirmEditPrice() {
+    this.action = 'edit'
+    this.status = 'inProgress'
+    this._service.update().subscribe(
+      () => {
+        this.price = parseFloat(this.editingPrice)
+        this.success()
+        setTimeout(() => {
+          this._parent.cancelEdit()
+          this.clear()
+        }, 1000)
+      },
+      e => {
+        this.error(e)
+      }
+    )
   }
 }
 
@@ -149,7 +196,7 @@ export class WidgetsModel {
 
   load() {
     this._service.all().subscribe(widgets => {
-      this.widgets = widgets.map(w => new WidgetModel(w.id, w.name, w.price, this))
+      this.widgets = widgets.map(w => new WidgetModel(w.id, w.name, w.price, this._service, this))
       this.loaded = true
     })
   }
@@ -163,7 +210,7 @@ export class WidgetsModel {
   }
 
   confirmAdd() {
-    let widget = new WidgetModel(0, this.adding.name, parseFloat(this.adding.price), this)
+    let widget = new WidgetModel(0, this.adding.name, parseFloat(this.adding.price), this._service, this)
     this.adding = null
     this.widgets.unshift(widget)
     this.addWidget(widget)

@@ -1,79 +1,4 @@
-@success: #7b8;
-@successBackground: lighten(desaturate(@success, 5%), 30%);
-@error: #d00;
-@errorBackground: lighten(desaturate(@error, 30%), 45%);
-@formBackground: #d5e4ed;
-@buttonMainColor: #337ab7;
-@buttonColor: lighten(desaturate(@buttonMainColor, 50%), 20%);
-
-.button {
-  border-radius: 4px;
-  text-decoration: none;
-  color: white;
-  padding: 1px 3px 1px 1px;
-  cursor: pointer;
-
-  background: @buttonColor;
-  border: 1px solid darken(@buttonColor, 10%);
-  
-  &:hover {
-    background: lighten(@buttonColor, 5%);
-    border-color: @buttonColor;
-  }
-
-  &.main {
-    background: @buttonMainColor;
-    border: 1px solid darken(@buttonMainColor, 10%);
-
-    &:hover {
-     background: lighten(@buttonMainColor, 10%);
-     border-color: @buttonMainColor;
-    } 
-  }
-
-  &.add {
-    margin: 5px;
-    margin-bottom: 10px;
-
-    float: right; 
-    &.adding {
-      visibility: hidden;
-    }
-  }
-}
-
-a {
-  text-decoration: underline;
-  color: @buttonMainColor;
-  cursor: pointer;
-
-  &.cancel {
-    color: @buttonColor;
-  }
-
-  .icon-add {
-    &:before {
-      margin-top: 2px;
-      margin-left: 2px;
-    }
-  }
-}
-
-input {
-  border: 1px solid #ddd;
-  padding: 2px 3px;
-  font-size: 1em;
-  border-radius: 3px;
-  margin-left: -4px;
-
-  &.full {
-    width: 100%;
-  }
-
-  &.number {
-    width: 50px;
-  }
-}
+@import "../styles.less";
 
 .editable {
   cursor: pointer;
@@ -130,12 +55,17 @@ input {
   background: @formBackground;
   display: inline;
   padding: 5px 5px 5px 7px;
+  padding: 10px 5px 10px 10px;//5px 5px 5px 7px;
   position: relative;
   top: 2px;
-  left: -2px;
+  left: -5px;
 
-  a.cancel {
-    margin: 0;
+  &.success {
+    background: @successBackground;
+  }
+
+  &.error {
+    background: @errorBackground;
   }
 }
 
@@ -185,27 +115,6 @@ input {
         text-align: right;
         width: 30%;
         padding: 5px 0 5px 0;
-
-        .status {
-          &.icon-spinner {
-            color: #aaa;
-          }
-
-          &.icon-ok {
-            color: @success;
-          }
-
-          &.icon-attention {
-            color: @error;
-            cursor: help;
-          }
-        }
-
-        .fail {
-          color: @error;
-          margin-right: 10px;
-          cursor: help;
-        }
       }
     }
 
@@ -231,17 +140,14 @@ input {
 
     .fadeout {
       background-color: #fff;
+      background: red;
 
       &:nth-child(2n+1) {
         background-color: #eee;
+      background: red;
       }
 
       transition: background-color 0.25s ease;
-
-      .status {
-        opacity: 0;
-        transition: opacity 0.25s ease;
-      }
     }
 
     &.add {
@@ -261,6 +167,8 @@ input {
     }
 
     &.loading {
+      padding: 10px 5px;
+
       i {
         margin-right: 5px;
         color: #555;
