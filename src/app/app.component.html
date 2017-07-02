@@ -23,7 +23,7 @@
         <a class="cancel" (click)="model.cancelAdd()"><i class="icon-cancel"></i></a>
       </div>
     </div>
-    <div class="row" *ngIf="!model.adding && !model.widgets.length">
+    <div class="row empty" *ngIf="!model.adding && !model.widgets.length">
       <div colspan="3">
         There are no widgets.
       </div>
