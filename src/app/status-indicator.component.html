@@ -1,9 +1,9 @@
-<span *ngIf="status">
-  <i *ngIf="status == 'inProgress'" class="status icon-spinner animate-spin"></i>
-  <i *ngIf="status == 'success'" class="status icon-ok"></i>
-  <span *ngIf="status == 'error'">
-    <abbr class="fail" [title]="errorMessage"><i class="status icon-attention"></i>{{actionName}} failed</abbr>
-    <a class="button main" (click)="retry.emit(null)"><i class="icon-{{retryIcon}}"></i>Retry</a>
-    <a class="cancel" (click)="cancel.emit(null)"><i class="icon-cancel"></i></a>
+<span *ngIf="model.status">
+  <i *ngIf="model.isInProgress" class="status icon-spinner animate-spin"></i>
+  <i *ngIf="model.isSuccess" class="status icon-ok"></i>
+  <span *ngIf="model.isError">
+    <abbr class="fail" [title]="model.errorMessage"><i class="status icon-attention"></i></abbr>
+    <a class="button main" (click)="model.retry()"><i class="icon-cw"></i>Retry</a>
+    <a class="cancel" (click)="model.abandon()"><i class="icon-cancel"></i></a>
   </span>
 </span>

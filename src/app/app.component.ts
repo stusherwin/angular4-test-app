@@ -5,6 +5,8 @@ import 'rxjs/add/observable/throw'
 import 'rxjs/add/operator/delay'
 import 'rxjs/add/operator/materialize'
 import 'rxjs/add/operator/dematerialize'
+import 'rxjs/add/operator/do'
+import { Subject } from 'rxjs/Subject'
 
 export class ApiAddWidgetRequest {
   name: string
@@ -74,108 +76,189 @@ export class WidgetService {
   }
 }
 
-export class WidgetModel {
-  action: string
+export interface IActionModel {
   status: string
   errorMessage: string
-  editingName: string
-  editingPrice: string
+  isInProgress: boolean
+  isSuccess: boolean
+  isError: boolean
+  isDone: boolean
+
+  confirm(): void
+  retry(): void
+  abandon(): void
+}
+
+export interface IEditModel extends IActionModel {
+  editing: boolean
+
+  start(): void
+  cancel(): void
+}
+
+export class ActionModel implements IActionModel {
+  status: string = ''
+  errorMessage: string = ''
 
   constructor(
-    public id: number,
-    public name: string,
-    public price: number,
-    private _service: WidgetService,
-    private _parent: WidgetsModel) {
-  }
-  
-  delete() {
-    this._parent.delete(this)
+    private _confirm: () => Observable<any>,
+    private _done: () => void,
+    private _abandon: () => void
+  ) {
   }
 
-  start(action: string) {
-    this.action = action
+  get isInProgress() {
+    return this.status && this.status == 'inProgress'
+  }
+
+  get isSuccess() {
+    return this.status && this.status == 'success' || this.status == 'done'
+  }
+
+  get isError() {
+    return this.status && this.status == 'error'
+  }
+
+  get isDone() {
+    return this.status && this.status == 'done'
+  }
+
+  confirm() {
     this.status = 'inProgress'
+    this._confirm().subscribe(
+      r => {
+        this.success()
+        setTimeout(() => {
+          this.done()
+          setTimeout(() => {
+            this.clear()
+          }, 250)
+        }, 500)
+      },
+      e => {
+        this.error(e)
+      })
   }
 
-  success() {
+  protected success() {
     this.status = 'success'
   }
 
-  error(errorMessage: string) {
+  private error(errorMessage: string) {
     this.status = 'error'
     this.errorMessage = errorMessage
   }
 
-  end() {
+  private done() {
     this.status = 'done'
+    this._done()
   }
 
-  clear() {
+  protected clear() {
     this.status = null
-    this.action = null
     this.errorMessage = null
   }
 
-  retryAdd() {
-    this._parent.retryAdd(this)
+  retry() {
+    this.confirm()
   }
 
-  abandonAdd() {
-    this._parent.abandonAdd(this) 
+  abandon() {
+    this.clear()
+    this._abandon()
+  }
+}
+
+export class EditModel<T> extends ActionModel implements IEditModel {
+  editing: boolean
+  editingValue: string
+
+  constructor(
+    _confirm: () => Observable<any>,
+    _done: () => void,
+    _abandon: () => void,
+    public value: T,
+    private _toEditingValue: (T) => string,
+    private _fromEditingValue: (string) => T
+  ) {
+    super(_confirm, _done, _abandon)
+    this.editingValue = this._toEditingValue(this.value)
   }
 
-  abandonDelete() {
+  start() {
+    this.editing = true
+  }
+
+  cancel() {
     this.clear()
   }
 
-  startEditName() {
-    this.editingName = this.name
-    this._parent.startEdit(this, 'name')
+  protected success() {
+    super.success()
+    this.value = this._fromEditingValue(this.editingValue)
   }
 
-  get isEditingName() {
-    return this._parent.isEditing(this, 'name')
+  protected clear() {
+    super.clear()
+    this.editing = false
+    this.editingValue = this._toEditingValue(this.value)
+  }
+}
+
+export class WidgetModel {
+  add: ActionModel
+  delete: ActionModel
+  name: EditModel<string>
+  price: EditModel<number>
+
+  constructor(
+    public id: number,
+    name: string,
+    price: number,
+    private _service: WidgetService,
+    private _parent: WidgetsModel) {
+      this.add = new ActionModel(
+        () => this.confirmAdd(),
+        () => {},
+        () => this._parent.abandonAdd(this))
+
+      this.delete = new ActionModel(
+        () => this.confirmDelete(),
+        () => this._parent.deleteDone(this),
+        () => {})
+
+      this.name = new EditModel<string>(
+        () => this.confirmEditName(),
+        () => {},
+        () => {},
+        name,
+        v => v,
+        v => v)
+
+      this.price = new EditModel<number>(
+        () => this.confirmEditPrice(),
+        () => {},
+        () => {},
+        price,
+        v => v.toFixed(2),
+        v => parseFloat(v))
   }
 
-  cancelEditName() {
-    this._parent.cancelEdit()
+  private confirmAdd(): Observable<any> {
+    return this._service.add({name: this.name.value, price: this.price.value})
+      .do(r => this.id = r.id)
   }
 
-  confirmEditName() {
-    this.name = this.editingName
-    this._parent.cancelEdit()
+  private confirmDelete(): Observable<any> {
+    return this._service.delete(this.id)
   }
 
-  startEditPrice() {
-    this.editingPrice = this.price.toFixed(2)
-    this._parent.startEdit(this, 'price')
+  private confirmEditName(): Observable<any> {
+    return this._service.update()
   }
 
-  get isEditingPrice() {
-    return this._parent.isEditing(this, 'price')
-  }
-
-  cancelEditPrice() {
-    this._parent.cancelEdit()
-  }
-
-  confirmEditPrice() {
-    this.action = 'edit'
-    this.status = 'inProgress'
-    this._service.update().subscribe(
-      () => {
-        this.price = parseFloat(this.editingPrice)
-        this.success()
-        setTimeout(() => {
-          this._parent.cancelEdit()
-          this.clear()
-        }, 1000)
-      },
-      e => {
-        this.error(e)
-      }
-    )
+  private confirmEditPrice(): Observable<any> {
+    return this._service.update()
   }
 }
 
@@ -205,33 +288,11 @@ export class WidgetsModel {
     this.adding = new AddingWidgetModel()
   }
 
-  retryAdd(widget: WidgetModel) {
-    this.addWidget(widget)
-  }
-
   confirmAdd() {
     let widget = new WidgetModel(0, this.adding.name, parseFloat(this.adding.price), this._service, this)
     this.adding = null
     this.widgets.unshift(widget)
-    this.addWidget(widget)
-  }
-
-  private addWidget(widget: WidgetModel) {
-    widget.start('add')
-    this._service.add({name: widget.name, price: widget.price}).subscribe(
-      r => {
-        widget.success()
-        widget.id = r.id
-        setTimeout(() => {
-          widget.end()
-          setTimeout(() => {
-            widget.clear()
-          }, 250)
-        }, 500)
-      },
-      e => {
-        widget.error(e)
-      })
+    widget.add.confirm()
   }
 
   abandonAdd(widget: WidgetModel) {
@@ -243,33 +304,9 @@ export class WidgetsModel {
     this.adding = null
   }
 
-  delete(widget: WidgetModel) {
-    widget.start('delete')
-    this._service.delete(widget.id).subscribe(
-      () => {
-        widget.success()
-        setTimeout(() => {
-          let ix = this.widgets.indexOf(widget)
-          this.widgets.splice(ix, 1)
-        }, 500)
-      },
-      e => {
-        widget.error(e)
-      })
-  }
-
-  startEdit(widget: WidgetModel, field: string) {
-    this.editing = widget
-    this.editingField = field
-  }
-
-  cancelEdit() {
-    this.editing = null
-    this.editingField = null
-  }
-
-  isEditing(widget: WidgetModel, field: string) {
-    return this.editing == widget && this.editingField == field
+  deleteDone(widget: WidgetModel) {
+    let ix = this.widgets.indexOf(widget)
+    this.widgets.splice(ix, 1)
   }
 }
 

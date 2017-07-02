@@ -29,58 +29,49 @@
       </div>
     </div>
     <div class="row" *ngFor="let w of model.widgets" [ngClass]="{
-          'adding': w.action == 'add',
-          'deleting': w.action == 'delete',
-          'in-progress': w.action == 'add' && w.status == 'inProgress',
-          'success': w.action == 'add' && w.status == 'success',
-          'error': w.action == 'add' && w.status == 'error',
-          'fadeout': w.status == 'done' && (w.action == 'add' || w.action == 'delete' && model.widgets.length == 1)
+          'adding': w.add.status,
+          'deleting': w.delete.status,
+          'in-progress': w.add.isInProgress || w.delete.isInProgress,
+          'success': w.add.isSuccess || w.delete.isSuccess,
+          'error': w.add.isError || w.delete.isError,
+          'fadeout': w.add.isDone || (w.delete.isDone && model.widgets.length == 1)
         }">
       <div class="col name">
-        <div class="editable" (click)="w.startEditName()" *ngIf="!w.isEditingName">
-          <span>{{w.name}}</span>
+        <div class="editable" (click)="w.name.start()" *ngIf="!w.name.editing">
+          <span>{{w.name.value}}</span>
         </div>
-        <div class="editing" *ngIf="w.isEditingName">
-          <input type="text" [value]="w.name" [value]="w.editingName" (change)="w.editingName = $event.target.value" (keyup)="w.editingName = $event.target.value" />
-          <a class="button main" (click)="w.confirmEditName()"><i class="icon-ok"></i>Done</a>
-          <a class="cancel" (click)="w.cancelEditName()"><i class="icon-cancel"></i></a>
+        <div class="editing" *ngIf="w.name.editing" [ngClass]="{success: w.name.isSuccess, 'error': w.name.isError}">
+          <input type="text" [value]="w.name.editingValue" (change)="w.name.editingValue = $event.target.value" (keyup)="w.name.editingValue = $event.target.value" />
+          <a class="button main" *ngIf="!w.name.status" (click)="w.name.confirm()"><i class="icon-ok"></i>Done</a>
+          <a class="cancel" *ngIf="!w.name.status" (click)="w.name.cancel()"><i class="icon-cancel"></i></a>
+          <status-indicator actionName="Edit" retryIcon="ok"
+                            [model]="w.name">
+          </status-indicator>
         </div>
       </div>
       <div class="col price">
-        <div class="editable" (click)="w.startEditPrice()" *ngIf="!w.isEditingPrice">
-          <span>&pound;{{w.price.toFixed(2)}}</span>
+        <div class="editable" (click)="w.price.start()" *ngIf="!w.price.editing">
+          <span>&pound;{{w.price.value.toFixed(2)}}</span>
         </div>
-        <div class="editing" *ngIf="w.isEditingPrice" [ngClass]="{success: w.status == 'success', 'error': w.status == 'error'}">
+        <div class="editing" *ngIf="w.price.editing" [ngClass]="{success: w.price.isSuccess, 'error': w.price.isError}">
           &pound;
-          <input type="text" class="number" [value]="w.editingPrice" (change)="w.editingPrice = $event.target.value" (keyup)="w.editingPrice = $event.target.value" />
-          <a class="button main" *ngIf="!w.status" (click)="w.confirmEditPrice()"><i class="icon-ok"></i>Done</a>
-          <a class="cancel" *ngIf="!w.status" (click)="w.cancelEditPrice()"><i class="icon-cancel"></i></a>
+          <input type="text" class="number" [value]="w.price.editingValue" (change)="w.price.editingValue = $event.target.value" (keyup)="w.price.editingValue = $event.target.value" />
+          <a class="button main" *ngIf="!w.price.status" (click)="w.price.confirm()"><i class="icon-ok"></i>Done</a>
+          <a class="cancel" *ngIf="!w.price.status" (click)="w.price.cancel()"><i class="icon-cancel"></i></a>
           <status-indicator actionName="Edit" retryIcon="ok"
-                            *ngIf="w.editingPrice"
-                            [status]="w.status"
-                            [errorMessage]="w.errorMessage"
-                            (retry)="w.confirmEditPrice()"
-                            (cancel)="w.cancelEditPrice()">
+                            [model]="w.price">
           </status-indicator>
         </div>
       </div>
       <div class="col action">
-        <span *ngIf="!w.status || w.action == 'edit' || (w.action == 'add' && w.status == 'done')">
-          <a class="button main" (click)="w.delete()"><i class="icon-trash"></i>Delete</a>
+        <span *ngIf="!w.add.status && !w.delete.status">
+          <a class="button main" (click)="w.delete.confirm()"><i class="icon-trash"></i>Delete</a>
         </span>
         <status-indicator actionName="Add" retryIcon="add"
-                          *ngIf="w.action == 'add'"
-                          [status]="w.status"
-                          [errorMessage]="w.errorMessage"
-                          (retry)="w.retryAdd()"
-                          (cancel)="w.abandonAdd()">
+                          [model]="w.add">
         </status-indicator>
         <status-indicator actionName="Delete" retryIcon="trash"
-                          *ngIf="w.action == 'delete'"
-                          [status]="w.status"
-                          [errorMessage]="w.errorMessage"
-                          (retry)="w.delete()"
-                          (cancel)="w.abandonDelete()">
+                          [model]="w.delete">
         </status-indicator>
       </div>
     </div>

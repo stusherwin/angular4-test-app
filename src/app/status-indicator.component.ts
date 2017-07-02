@@ -6,6 +6,14 @@ import 'rxjs/add/operator/delay'
 import 'rxjs/add/operator/materialize'
 import 'rxjs/add/operator/dematerialize'
 
+export interface IActionModel {
+  status: string
+  errorMessage: string
+
+  start(): void
+  retry(): void
+  abandon(): void
+}
 
 @Component({
   selector: 'status-indicator',
@@ -14,20 +22,8 @@ import 'rxjs/add/operator/dematerialize'
 })
 export class StatusIndicatorComponent {
   @Input()
-  status: string
-
-  @Input()
-  errorMessage: string
-
-  @Input()
-  actionName: string
+  model: IActionModel
 
   @Input()
   retryIcon: string
-
-  @Output()
-  retry = new EventEmitter<void>()
-
-  @Output()
-  cancel = new EventEmitter<void>()
 }
