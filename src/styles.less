@@ -23,6 +23,35 @@ h2 {
 @buttonMainColor: #337ab7;
 @buttonColor: lighten(desaturate(@buttonMainColor, 50%), 20%);
 
+a {
+  text-decoration: underline;
+  color: @buttonMainColor;
+  cursor: pointer;
+
+  &:hover {
+    color: lighten(@buttonMainColor, 5%);
+  }
+
+  &.cancel {
+    color: @buttonColor;
+
+    i:before {
+      margin: 0;
+    }
+
+    &:hover {
+      color: lighten(@buttonColor, 5%);
+    }
+  }
+
+  .icon-add {
+    &:before {
+      margin-top: 2px;
+      margin-left: 2px;
+    }
+  }
+}
+
 .button {
   border-radius: 4px;
   text-decoration: none;
@@ -36,6 +65,7 @@ h2 {
   &:hover {
     background: lighten(@buttonColor, 5%);
     border-color: @buttonColor;
+    color: white;
   }
 
   &.main {
@@ -59,26 +89,6 @@ h2 {
   }
 }
 
-a {
-  text-decoration: underline;
-  color: @buttonMainColor;
-  cursor: pointer;
-
-  &.cancel {
-    color: @buttonColor;
-    i:before {
-      margin: 0;
-    }
-  }
-
-  .icon-add {
-    &:before {
-      margin-top: 2px;
-      margin-left: 2px;
-    }
-  }
-}
-
 input {
   border: 1px solid #ddd;
   padding: 2px 3px;
@@ -92,5 +102,78 @@ input {
 
   &.number {
     width: 50px;
+  }
+}
+
+.editable-value {
+  position: relative;
+
+  .editable-value-display {
+    cursor: pointer;
+    
+    span {
+      border-bottom: 1px dashed #bbb;
+    }
+
+    &::after {
+      content: '\e807';
+      color: #bbb;
+      font-size: 0.8em;
+
+      // from fontello:
+      font-family: "fontello";
+      font-style: normal;
+      font-weight: normal;
+      speak: none;
+    
+      display: inline-block;
+      text-decoration: inherit;
+      width: 1em;
+      text-align: center;
+    
+      /* For safety - reset parent styles, that can break glyph codes*/
+      font-variant: normal;
+      text-transform: none;
+    
+      /* fix buttons height, for twitter bootstrap */
+      line-height: 1em;
+    
+      /* you can be more comfortable with increased icons size */
+      /* font-size: 120%; */
+    
+      /* Font smoothing. That was taken from TWBS */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    &:hover {
+      color: @buttonMainColor;
+
+      span {
+        border-color: @buttonMainColor;
+      }
+
+      &::after {
+        color: @buttonMainColor;
+      }
+    }
+  }
+
+  .editable-value-edit {
+    background: @formBackground;
+    border-bottom: 1px solid @formBackground;
+    display: inline;
+    padding: 7px 5px 7px 10px;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+
+    &.success {
+      background: @successBackground;
+    }
+
+    &.error {
+      background: @errorBackground;
+    }
   }
 }

@@ -1,74 +1,5 @@
 @import "../styles.less";
 
-.editable {
-  cursor: pointer;
-  
-  span {
-    border-bottom: 1px dashed #bbb;
-  }
-
-  &::after {
-    content: '\e807';
-    color: #bbb;
-    font-size: 0.8em;
-
-    // from fontello:
-    font-family: "fontello";
-    font-style: normal;
-    font-weight: normal;
-    speak: none;
-  
-    display: inline-block;
-    text-decoration: inherit;
-    width: 1em;
-    text-align: center;
-  
-    /* For safety - reset parent styles, that can break glyph codes*/
-    font-variant: normal;
-    text-transform: none;
-  
-    /* fix buttons height, for twitter bootstrap */
-    line-height: 1em;
-  
-    /* you can be more comfortable with increased icons size */
-    /* font-size: 120%; */
-  
-    /* Font smoothing. That was taken from TWBS */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  &:hover {
-    color: @buttonMainColor;
-
-    span {
-      border-color: @buttonMainColor;
-    }
-
-    &::after {
-      color: @buttonMainColor;
-    }
-  }
-}
-
-.editing {
-  background: @formBackground;
-  display: inline;
-  padding: 5px 5px 5px 7px;
-  padding: 10px 5px 10px 10px;//5px 5px 5px 7px;
-  position: relative;
-  top: 2px;
-  left: -5px;
-
-  &.success {
-    background: @successBackground;
-  }
-
-  &.error {
-    background: @errorBackground;
-  }
-}
-
 .widgets {
   padding: 10px;
   background: #fff;
@@ -83,16 +14,9 @@
     }
 
     display: flex;
-    padding: 5px;
+    padding: 10px 5px 10px 10px;
 
     .col {
-      .editable {
-        padding: 5px;
-      }
-
-      .editing {
-      }
-
       &.name {
         width: 50%;
       }
@@ -101,9 +25,9 @@
         width: 20%;
         min-width: 200px;
 
-        .editing {
+        /deep/ .editable-value-edit {
           padding-left: 4px;
-          left: -4px;
+          left: -10px;
 
           input {
             margin-left: -2px;
@@ -114,7 +38,6 @@
       &.action {
         text-align: right;
         width: 30%;
-        padding: 5px 0 5px 0;
       }
     }
 
@@ -140,11 +63,9 @@
 
     .fadeout {
       background-color: #fff;
-      background: red;
 
       &:nth-child(2n+1) {
         background-color: #eee;
-      background: red;
       }
 
       transition: background-color 0.25s ease;
@@ -152,31 +73,28 @@
 
     &.add {
       background-color: @formBackground;
+      padding: 7px 5px 7px 10px;
 
       .col {
-        padding: 2px 5px;
-
         &.price {
-          padding-left: 5px;
+          margin-left: -15px;
+
+          input {
+            margin-left: -2px;
+          }
         }
 
         &.action {
-          padding: 5px 0 5px 0;
+          padding-top: 2px;
         }
       }
     }
 
     &.loading {
-      padding: 10px 5px;
-
       i {
         margin-right: 5px;
         color: #555;
       }
-    }
-
-    &.empty {
-      padding: 10px 5px;
     }
   }
 }

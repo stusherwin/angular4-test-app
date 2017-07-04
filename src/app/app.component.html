@@ -11,12 +11,12 @@
     <div class="row add" *ngIf="model.adding">
       <div class="col name">
         <input type="text" placeholder="Widget name"
-                [value]="model.adding.name" (change)="model.adding.name = $event.target.value" (keyup)="model.adding.name = $event.target.value" />
+                [(ngModel)]="model.adding.name" />
       </div>
       <div class="col price">
         &pound;
         <input type="text" class="number" placeholder="Price"
-                [value]="model.adding.price" (change)="model.adding.price = $event.target.value" (keyup)="model.adding.price = $event.target.value" />
+                [(ngModel)]="model.adding.price" />
       </div>
       <div class="col action">
         <a class="button main" (click)="model.confirmAdd()"><i class="icon-ok"></i>Done</a>
@@ -37,31 +37,10 @@
           'fadeout': w.add.isDone || (w.delete.isDone && model.widgets.length == 1)
         }">
       <div class="col name">
-        <div class="editable" (click)="w.name.start()" *ngIf="!w.name.editing">
-          <span>{{w.name.value}}</span>
-        </div>
-        <div class="editing" *ngIf="w.name.editing" [ngClass]="{success: w.name.isSuccess, 'error': w.name.isError}">
-          <input type="text" [value]="w.name.editingValue" (change)="w.name.editingValue = $event.target.value" (keyup)="w.name.editingValue = $event.target.value" />
-          <a class="button main" *ngIf="!w.name.status" (click)="w.name.confirm()"><i class="icon-ok"></i>Done</a>
-          <a class="cancel" *ngIf="!w.name.status" (click)="w.name.cancel()"><i class="icon-cancel"></i></a>
-          <status-indicator actionName="Edit" retryIcon="ok"
-                            [model]="w.name">
-          </status-indicator>
-        </div>
+        <editable-text [model]="w.name"></editable-text>
       </div>
       <div class="col price">
-        <div class="editable" (click)="w.price.start()" *ngIf="!w.price.editing">
-          <span>&pound;{{w.price.value.toFixed(2)}}</span>
-        </div>
-        <div class="editing" *ngIf="w.price.editing" [ngClass]="{success: w.price.isSuccess, 'error': w.price.isError}">
-          &pound;
-          <input type="text" class="number" [value]="w.price.editingValue" (change)="w.price.editingValue = $event.target.value" (keyup)="w.price.editingValue = $event.target.value" />
-          <a class="button main" *ngIf="!w.price.status" (click)="w.price.confirm()"><i class="icon-ok"></i>Done</a>
-          <a class="cancel" *ngIf="!w.price.status" (click)="w.price.cancel()"><i class="icon-cancel"></i></a>
-          <status-indicator actionName="Edit" retryIcon="ok"
-                            [model]="w.price">
-          </status-indicator>
-        </div>
+        <editable-price [model]="w.price"></editable-price>
       </div>
       <div class="col action">
         <span *ngIf="!w.add.status && !w.delete.status">

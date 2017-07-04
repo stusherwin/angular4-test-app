@@ -76,27 +76,7 @@ export class WidgetService {
   }
 }
 
-export interface IActionModel {
-  status: string
-  errorMessage: string
-  isInProgress: boolean
-  isSuccess: boolean
-  isError: boolean
-  isDone: boolean
-
-  confirm(): void
-  retry(): void
-  abandon(): void
-}
-
-export interface IEditModel extends IActionModel {
-  editing: boolean
-
-  start(): void
-  cancel(): void
-}
-
-export class ActionModel implements IActionModel {
+export class ActionModel {
   status: string = ''
   errorMessage: string = ''
 
@@ -169,20 +149,15 @@ export class ActionModel implements IActionModel {
   }
 }
 
-export class EditModel<T> extends ActionModel implements IEditModel {
+export class EditModel extends ActionModel {
   editing: boolean
-  editingValue: string
 
   constructor(
     _confirm: () => Observable<any>,
     _done: () => void,
     _abandon: () => void,
-    public value: T,
-    private _toEditingValue: (T) => string,
-    private _fromEditingValue: (string) => T
   ) {
     super(_confirm, _done, _abandon)
-    this.editingValue = this._toEditingValue(this.value)
   }
 
   start() {
@@ -195,21 +170,69 @@ export class EditModel<T> extends ActionModel implements IEditModel {
 
   protected success() {
     super.success()
-    this.value = this._fromEditingValue(this.editingValue)
   }
 
   protected clear() {
     super.clear()
     this.editing = false
-    this.editingValue = this._toEditingValue(this.value)
+  }
+}
+
+export class TextEditModel extends EditModel {
+  editingValue: string
+
+  constructor(
+    _confirm: () => Observable<any>,
+    _done: () => void,
+    _abandon: () => void,
+    public value: string
+  ) {
+    super(_confirm, _done, _abandon)
+    this.editingValue = this.value
+  }
+
+  protected success() {
+    super.success()
+    this.value = this.editingValue
+  }
+
+  protected clear() {
+    super.clear()
+    this.editing = false
+    this.editingValue = this.value
+  }
+}
+
+export class PriceEditModel extends EditModel {
+  editingValue: string
+
+  constructor(
+    _confirm: () => Observable<any>,
+    _done: () => void,
+    _abandon: () => void,
+    public value: number
+  ) {
+    super(_confirm, _done, _abandon)
+    this.editingValue = this.value.toFixed(2)
+  }
+
+  protected success() {
+    super.success()
+    this.value = parseFloat(this.editingValue)
+  }
+
+  protected clear() {
+    super.clear()
+    this.editing = false
+    this.editingValue = this.value.toFixed(2)
   }
 }
 
 export class WidgetModel {
   add: ActionModel
   delete: ActionModel
-  name: EditModel<string>
-  price: EditModel<number>
+  name: TextEditModel
+  price: PriceEditModel
 
   constructor(
     public id: number,
@@ -227,21 +250,17 @@ export class WidgetModel {
         () => this._parent.deleteDone(this),
         () => {})
 
-      this.name = new EditModel<string>(
+      this.name = new TextEditModel(
         () => this.confirmEditName(),
         () => {},
         () => {},
-        name,
-        v => v,
-        v => v)
+        name)
 
-      this.price = new EditModel<number>(
+      this.price = new PriceEditModel(
         () => this.confirmEditPrice(),
         () => {},
         () => {},
-        price,
-        v => v.toFixed(2),
-        v => parseFloat(v))
+        price)
   }
 
   private confirmAdd(): Observable<any> {
