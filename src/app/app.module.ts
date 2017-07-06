@@ -6,10 +6,15 @@ import { AppComponent } from './app.component';
 import { StatusIndicatorComponent } from './status-indicator.component';
 import { EditableTextComponent } from './editable-text.component';
 import { EditablePriceComponent } from './editable-price.component';
+import { WidgetsComponent } from './widgets.component'
 
 @NgModule({
   declarations: [
-    AppComponent, StatusIndicatorComponent, EditableTextComponent, EditablePriceComponent
+    AppComponent,
+    StatusIndicatorComponent,
+    EditableTextComponent,
+    EditablePriceComponent,
+    WidgetsComponent
   ],
   imports: [
     BrowserModule, FormsModule
