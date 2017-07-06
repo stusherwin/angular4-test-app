@@ -5,6 +5,10 @@ import { Observable } from 'rxjs/Observable'
 export class TextEditModel extends EditModel {
   editingValue: string
 
+  get potentialValue(): string {
+    return this.editingValue
+  }
+
   constructor(
     key: string,
     editService: EditService,

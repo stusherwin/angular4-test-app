@@ -24,30 +24,36 @@ export class ApiWidget {
   price: number
 }
 
+export class ApiUpdateWidgetRequest {
+  id: number
+  property: string
+  value: any
+}
+
 export class WidgetService {
   fail = false
 
-  private widgets: ApiWidget[] = [
+  private _widgets: ApiWidget[] = [
     {id: 1, name: 'Left-handed widget', price: 14.99},
     {id: 2, name: 'Right-handed widget', price: 13.99},
     {id: 3, name: 'Screw confobulator', price: 23.50}
   ]
-  nextId = 4
 
   all(): Observable<ApiWidget[]> {
-    return Observable.of(this.widgets).delay(3000);
+    return Observable.of(this._widgets).delay(3000);
   }
 
   add(request: ApiAddWidgetRequest): Observable<ApiAddWidgetResponse> {
     if(!this.fail) {
       this.fail = true
-      let id = this.nextId++
-
-      return Observable.of({
-        id: id,
+      let newWidget = {
+        id: this._widgets.reduce((max, w) => Math.max(max, w.id), 0) + 1,
         name: request.name,
         price: request.price
-      }).delay(3000)
+      }
+      this._widgets.push(newWidget)
+
+      return Observable.of(newWidget).delay(3000)
     }
 
     this.fail = false
@@ -57,6 +63,8 @@ export class WidgetService {
   delete(id: number): Observable<void> {
     if(!this.fail) {
       this.fail = true
+      let i = this._widgets.findIndex(w => w.id == id)
+      this._widgets.splice(i, 1)
       
       return Observable.of(null).delay(3000)
     }
@@ -65,9 +73,11 @@ export class WidgetService {
     return Observable.throw('Could not delete this widget').materialize().delay(3000).dematerialize()
   }
 
-  update(): Observable<void> {
+  update(request: ApiUpdateWidgetRequest): Observable<void> {
     if(!this.fail) {
       this.fail = true
+      let i = this._widgets.findIndex(w => w.id == request.id)
+      this._widgets[i][request.property] = request.value
       
       return Observable.of(null).delay(3000)
     }

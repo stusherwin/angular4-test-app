@@ -5,6 +5,10 @@ import { Observable } from 'rxjs/Observable'
 export class PriceEditModel extends EditModel {
   editingValue: string
 
+  get potentialValue(): number {
+    return parseFloat(this.editingValue)
+  }
+
   constructor(
     key: string,
     editService: EditService,
@@ -20,7 +24,7 @@ export class PriceEditModel extends EditModel {
 
   protected success() {
     super.success()
-    this.value = parseFloat(this.editingValue)
+    this.value = this.potentialValue
   }
 
   protected clear() {

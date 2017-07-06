@@ -69,11 +69,11 @@ export class WidgetModel implements IReadOnly {
   }
 
   private confirmEditName(): Observable<any> {
-    return this._service.update()
+    return this._service.update({id: this.id, property: 'name', value: this.name.potentialValue})
   }
 
   private confirmEditPrice(): Observable<any> {
-    return this._service.update()
+    return this._service.update({id: this.id, property: 'price', value: this.price.potentialValue})
   }
 }
 
