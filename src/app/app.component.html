@@ -43,7 +43,7 @@
         <editable-price [model]="w.price"></editable-price>
       </div>
       <div class="col action">
-        <span *ngIf="!w.add.status && !w.delete.status">
+        <span *ngIf="!w.isReadOnly">
           <a class="button main" (click)="w.delete.confirm()"><i class="icon-trash"></i>Delete</a>
         </span>
         <status-indicator actionName="Add" retryIcon="add"

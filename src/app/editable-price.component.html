@@ -1,5 +1,8 @@
 <div class="editable-value">
-  <div class="editable-value-display" (click)="model.start()" *ngIf="!model.editing">
+  <div class="editable-value-display" (click)="model.start()" *ngIf="!model.editing && !model.isReadOnly">
+    <span>&pound;{{model.value.toFixed(2)}}</span>
+  </div>
+  <div class="editable-value-display-read-only" *ngIf="!model.editing && model.isReadOnly">
     <span>&pound;{{model.value.toFixed(2)}}</span>
   </div>
   <div class="editable-value-edit" *ngIf="model.editing" [ngClass]="{success: model.isSuccess, 'error': model.isError}">
