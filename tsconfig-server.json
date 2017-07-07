@@ -1,0 +1,16 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist/server",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "target": "es6",
+    "noImplicitAny": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "files": ["./src/server/server.ts"],
+  "includes": ["./src/server/**/*"]
+}
