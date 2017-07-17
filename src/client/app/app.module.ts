@@ -7,6 +7,7 @@ import { StatusIndicatorComponent } from './status-indicator.component';
 import { EditableTextComponent } from './editable-text.component';
 import { EditablePriceComponent } from './editable-price.component';
 import { WidgetsComponent } from './widgets.component'
+import { PacksComponent } from './packs.component'
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { WidgetsComponent } from './widgets.component'
     StatusIndicatorComponent,
     EditableTextComponent,
     EditablePriceComponent,
-    WidgetsComponent
+    WidgetsComponent,
+    PacksComponent
   ],
   imports: [
     BrowserModule, FormsModule

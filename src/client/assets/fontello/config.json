@@ -343,6 +343,12 @@
       "src": "fontawesome"
     },
     {
+      "uid": "861ab06e455e2de3232ebef67d60d708",
+      "css": "minus",
+      "code": 59432,
+      "src": "fontawesome"
+    },
+    {
       "uid": "64a8a034b254911459be3c60bce7183d",
       "css": "send-mail",
       "code": 59419,

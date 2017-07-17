@@ -1,0 +1,100 @@
+<div class="packs">
+  <a class="button main add" [class.adding]="model.adding" (click)="model.startAdd()"><i class="icon-edit-1"></i>Create pack</a>        
+  <h2>Packs</h2>
+
+  <div class="row loading" *ngIf="!model.loaded">
+    <div colspan="3">
+      <i class="status icon-spinner animate-spin"></i>Loading...
+    </div>
+  </div>
+  <div *ngIf="model.loaded">
+    <div class="row add" *ngIf="model.adding">
+      <div class="col name">
+        <input type="text" placeholder="Widget name"
+                [(ngModel)]="model.adding.name" />
+      </div>
+      <div class="col price">
+        &pound;
+        <input type="text" class="number" placeholder="Price"
+                [(ngModel)]="model.adding.price" />
+      </div>
+      <div class="col action">
+        <a class="button main" (click)="model.confirmAdd()"><i class="icon-ok"></i>Done</a>
+        <a class="cancel" (click)="model.cancelAdd()"><i class="icon-cancel"></i></a>
+      </div>
+    </div>
+    <div class="row empty" *ngIf="!model.adding && !model.packs.length">
+      <div colspan="3">
+        There are no packs.
+      </div>
+    </div>
+    <div class="row" *ngFor="let p of model.packs" [ngClass]="{
+          'adding': p.add.status,
+          'deleting': p.delete.status,
+          'in-progress': p.add.isInProgress || p.delete.isInProgress,
+          'success': p.add.isSuccess || p.delete.isSuccess,
+          'error': p.add.isError || p.delete.isError,
+          'fadeout': p.add.isDone || (p.delete.isDone && model.widgets.length == 1)
+        }">
+      <div class="line">
+        <div class="col name">
+          <editable-text [model]="p.name"></editable-text>
+        </div>
+        <div class="col price">
+          <editable-price [model]="p.price"></editable-price>
+        </div>
+        <div class="col action">
+          <span *ngIf="!p.isReadOnly && !p.add.isError && !p.delete.isError">
+            <a class="button main" (click)="p.delete.confirm()"><i class="icon-trash"></i>Delete</a>
+          </span>
+          <status-indicator actionName="Add" retryIcon="add"
+                            [model]="p.add">
+          </status-indicator>
+          <status-indicator actionName="Delete" retryIcon="trash"
+                            [model]="p.delete">
+          </status-indicator>
+        </div>
+      </div>
+      <hr />
+      <div class="widgets">
+        <div>
+          <a class="button main add"><i class="icon-add"></i>Add widget</a>
+          <h3>Widgets</h3>
+        </div>
+        <div class="line">
+          <div class="col name">
+            Widget 1
+          </div>
+          <div class="col price">
+            12
+          </div>
+          <div class="col action">
+            <a class="button main"><i class="icon-minus"></i>Remove</a>
+          </div>
+        </div>
+        <div class="line">
+          <div class="col name">
+            Widget 2
+          </div>
+          <div class="col price">
+            6
+          </div>
+          <div class="col action">
+            <a class="button main"><i class="icon-minus"></i>Remove</a>
+          </div>
+        </div>
+        <div class="line">
+          <div class="col name">
+            Widget 3
+          </div>
+          <div class="col price">
+            1
+          </div>
+          <div class="col action">
+            <a class="button main"><i class="icon-minus"></i>Remove</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

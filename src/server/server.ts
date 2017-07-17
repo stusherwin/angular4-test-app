@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use('/api', api);
 
 app.all('/*', function(req: any, res: any) {
-  res.sendFile(path.resolve('client/index.html'));
+  res.sendFile(path.resolve('dist/client/index.html'));
 });
 
 app.listen(+(process.argv[2]), function () {

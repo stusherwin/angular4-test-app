@@ -1,10 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+@background: #7b8;
+@success: #7b8;
+@successBackground: lighten(desaturate(@success, 5%), 30%);
+@error: #d00;
+@errorBackground: lighten(desaturate(@error, 30%), 45%);
+@formBackground: #d5e4ed;
+@buttonMainColor: #337ab7;
+@buttonColor: lighten(desaturate(@buttonMainColor, 50%), 20%);
+
 * {
   font-family: 'Josefin Sans', sans-serif;
 }
 
 body {
-  background-color: #7b8;
+  background-color: @background;
 }
 
 h1, h2, h3, h4 {
@@ -14,14 +22,6 @@ h1, h2, h3, h4 {
 h2 {
   margin-bottom: 15px;
 }
-
-@success: #7b8;
-@successBackground: lighten(desaturate(@success, 5%), 30%);
-@error: #d00;
-@errorBackground: lighten(desaturate(@error, 30%), 45%);
-@formBackground: #d5e4ed;
-@buttonMainColor: #337ab7;
-@buttonColor: lighten(desaturate(@buttonMainColor, 50%), 20%);
 
 a {
   text-decoration: underline;
@@ -77,15 +77,15 @@ a {
      border-color: @buttonMainColor;
     } 
   }
+}
 
-  &.add {
-    margin: 5px;
-    margin-bottom: 10px;
+a.add {
+  margin: 5px;
+  margin-bottom: 10px;
 
-    float: right; 
-    &.adding {
-      visibility: hidden;
-    }
+  float: right; 
+  &.adding {
+    visibility: hidden;
   }
 }
 
