@@ -40,7 +40,7 @@ export class PackService {
   ]
 
   all(): Observable<ApiPack[]> {
-    return Observable.of(this._packs).delay(3000);
+    return Observable.of(this._packs).delay(1)//3000);
   }
 
   add(request: ApiAddPackRequest): Observable<ApiAddPackResponse> {
@@ -53,7 +53,7 @@ export class PackService {
       }
       this._packs.push(newPack)
 
-      return Observable.of(newPack).delay(3000)
+      return Observable.of(newPack).delay(1)//3000)
     }
 
     this.fail = false
@@ -66,7 +66,7 @@ export class PackService {
       let i = this._packs.findIndex(w => w.id == id)
       this._packs.splice(i, 1)
       
-      return Observable.of(null).delay(3000)
+      return Observable.of(null).delay(1)//3000)
     }
 
     this.fail = false
@@ -79,7 +79,7 @@ export class PackService {
       let i = this._packs.findIndex(w => w.id == request.id)
       this._packs[i][request.property] = request.value
       
-      return Observable.of(null).delay(3000)
+      return Observable.of(null).delay(1)//3000)
     }
 
     this.fail = false

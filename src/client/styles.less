@@ -13,6 +13,7 @@
 
 body {
   background-color: @background;
+  margin: 0;
 }
 
 h1, h2, h3, h4 {
@@ -167,10 +168,12 @@ input {
     background: @formBackground;
     border-bottom: 1px solid @formBackground;
     display: inline;
-    padding: 7px 5px 7px 10px;
+    padding: 2px;// 7px 5px 7px 10px;
+    padding-left: 6px;
     position: absolute;
-    top: -10px;
-    left: -10px;
+    top: -5px;
+    left: -6px;
+    border-radius: 2px;
 
     &.success {
       background: @successBackground;

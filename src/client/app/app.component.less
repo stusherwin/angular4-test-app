@@ -1,0 +1,76 @@
+@import "../styles.less";
+
+.nav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+
+  .nav-section {
+    margin: 10px;
+    background: #d0e2d4;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 0;
+
+    h3 {
+      &.current {
+        background: #d0e2d4;
+        margin: -10px -10px 10px -10px;
+        padding: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: #000;
+
+      &:hover {
+        color: @buttonMainColor;
+      }
+      
+      &.current {
+        font-weight: bold;
+      }
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      //display: none;
+
+      li {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+      }
+    }
+
+    & > ul {
+      margin-top: 10px;
+    }
+
+    li > ul {
+      position: relative;
+      padding-left: 10px;
+    }
+
+    &.current {
+      background: #fff;
+    }
+  }
+}
+
+ul {
+  display: none;
+}
+
+.current > ul {
+  display: block;
+}
+
+.current > a {
+}

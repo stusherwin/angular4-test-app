@@ -1,5 +1,39 @@
-<widgets>
-</widgets>
-
-<packs>
-</packs>
+<div style="margin-left: 300px; padding: 10px">
+  <router-outlet></router-outlet>
+</div>
+<div class="nav">
+  <div class="nav-section" routerLinkActive="current">
+    <h3 routerLinkActive="current"><a routerLink="/packs">Packs</a></h3>
+    <ul>  
+      <li><a routerLink="/packs/sub1" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-section 1</a></li>
+      <li routerLinkActive="current">
+        <a routerLink="/packs/sub2" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-section 2</a>
+        <ul>
+          <li routerLinkActive="current">
+            <a routerLink="/packs/sub2/subsub1" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-sub-section 1</a>
+            <ul>
+              <li><a routerLink="/packs/sub2/subsub1/subsubsub1" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-sub-sub-section 1</a></li>
+              <li><a routerLink="/packs/sub2/subsub1/subsubsub2" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-sub-sub-section 2</a></li>
+            </ul>
+          </li>
+          <li routerLinkActive="current">
+            <a routerLink="/packs/sub2/subsub2" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-sub-section 2</a>
+            <ul>
+              <li><a routerLink="/packs/sub2/subsub2/subsubsub1" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-sub-sub-section 1</a></li>
+              <li><a routerLink="/packs/sub2/subsub2/subsubsub2" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}">Sub-sub-sub-section 2</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div class="nav-section" routerLinkActive="current" [routerLinkActiveOptions]="{exact: false}">
+    <h3 routerLinkActive="current"><a routerLink="/widgets">Widgets</a></h3>
+  </div>
+  <div class="nav-section" routerLinkActive="current" [routerLinkActiveOptions]="{exact: false}">
+    <a href="#"><h3>Section 3</h3></a>
+  </div>
+  <div class="nav-section" routerLinkActive="current" [routerLinkActiveOptions]="{exact: false}">
+    <a href="#"><h3>Section 4</h3></a>
+  </div>
+</div>

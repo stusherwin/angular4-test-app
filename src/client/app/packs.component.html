@@ -47,6 +47,7 @@
           <span *ngIf="!p.isReadOnly && !p.add.isError && !p.delete.isError">
             <a class="button main" (click)="p.delete.confirm()"><i class="icon-trash"></i>Delete</a>
           </span>
+          <a class="button main"><i class="icon-add"></i>Add widget</a>
           <status-indicator actionName="Add" retryIcon="add"
                             [model]="p.add">
           </status-indicator>
@@ -55,11 +56,10 @@
           </status-indicator>
         </div>
       </div>
-      <hr />
+      <!--<hr />-->
       <div class="widgets">
         <div>
-          <a class="button main add"><i class="icon-add"></i>Add widget</a>
-          <h3>Widgets</h3>
+          <!--<h3>Widgets</h3>-->
         </div>
         <div class="line">
           <div class="col name">
