@@ -11,5 +11,5 @@ export class StatusIndicatorComponent {
   model: ActionModel
 
   @Input()
-  retryIcon: string
+  retryDisabled = false
 }

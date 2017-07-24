@@ -5,12 +5,18 @@
   <div class="editable-value-display-read-only" *ngIf="!model.editing && model.isReadOnly">
     {{model.value}}
   </div>
-  <div class="editable-value-edit" *ngIf="model.editing" [ngClass]="{success: model.isSuccess, 'error': model.isError}">
-    <input type="text" [(ngModel)]="model.editingValue" />
-    <a class="button main" *ngIf="!model.status" (click)="model.confirm()"><i class="icon-ok"></i>Done</a>
+  <form #ngForm="ngForm" [title]="model.submitted? validationErrors : ''"
+        (ngSubmit)="onSubmit()"
+        class="editable-value-edit"
+        *ngIf="model.editing"
+        [ngClass]="{success: model.isSuccess, error: model.isError, submitted: model.submitted}">
+    <input type="text" #input name="value" [(ngModel)]="model.editingValue" [required]="required" (ngModelChange)="onChange()" />
+    <abbr class="warn" *ngIf="model.submitted && !ngForm.form.valid" [title]="validationErrors"><i class="status icon-warning"></i></abbr>
+    <button type="submit" [disabled]="model.submitted && !ngForm.form.valid" class="button main" *ngIf="!model.status"><i class="icon-ok"></i>Done</button>
     <a class="cancel" *ngIf="!model.status" (click)="model.cancel()"><i class="icon-cancel"></i></a>
     <status-indicator actionName="Edit" retryIcon="ok"
+                      [retryDisabled]="model.submitted && !ngForm.form.valid"
                       [model]="model">
     </status-indicator>
-  </div>
+  </form>
 </div>

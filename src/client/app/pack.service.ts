@@ -9,6 +9,23 @@ import 'rxjs/add/operator/dematerialize'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/filter'
 
+export class ApiAddWidgetRequest {
+  packId: number
+  widgetId: number
+  quantity: number
+}
+
+export class ApiRemoveWidgetRequest {
+  packId: number
+  widgetId: number
+}
+
+export class ApiUpdateWidgetRequest {
+  packId: number
+  widgetId: number
+  quantity: number
+}
+
 export class ApiAddPackRequest {
   name: string
   price: number
@@ -18,10 +35,17 @@ export class ApiAddPackResponse {
   id: number
 }
 
+export class ApiWidget {
+  id: number
+  name: string
+  quantity: number
+}
+
 export class ApiPack {
   id: number
   name: string
   price: number
+  widgets: ApiWidget[]
 }
 
 export class ApiUpdatePackRequest {
@@ -34,9 +58,23 @@ export class PackService {
   fail = false
 
   private _packs: ApiPack[] = [
-    {id: 1, name: 'Left-handed pack', price: 14.99},
-    {id: 2, name: 'Right-handed pack', price: 13.99},
-    {id: 3, name: 'Screw confobulator', price: 23.50}
+    {id: 1, name: 'Left-handed pack', price: 14.99, widgets: [
+    ]},
+    {id: 2, name: 'Right-handed pack', price: 13.99, widgets: [
+      {id: 1, name: 'Left-handed widget', quantity: 1},
+      {id: 2, name: 'Right-handed widget', quantity: 3},
+      {id: 3, name: 'Screw confobulator', quantity: 2}
+    ]},
+    {id: 3, name: 'Screw confobulator', price: 23.50, widgets: [
+      {id: 1, name: 'Left-handed widget', quantity: 1},
+      {id: 3, name: 'Screw confobulator', quantity: 2}
+    ]}
+  ]
+
+  private _widgets: any[] = [
+    {id: 1, name: 'Left-handed widget'},
+    {id: 2, name: 'Right-handed widget'},
+    {id: 3, name: 'Screw confobulator'}
   ]
 
   all(): Observable<ApiPack[]> {
@@ -49,7 +87,8 @@ export class PackService {
       let newPack = {
         id: this._packs.reduce((max, w) => Math.max(max, w.id), 0) + 1,
         name: request.name,
-        price: request.price
+        price: request.price,
+        widgets: []
       }
       this._packs.push(newPack)
 
@@ -84,5 +123,48 @@ export class PackService {
 
     this.fail = false
     return Observable.throw('Could not update this pack').materialize().delay(3000).dematerialize()
+  }
+
+  addWidget(request: ApiAddWidgetRequest): Observable<void> {
+    if(!this.fail) {
+      this.fail = true
+      let pack = this._packs.find(p => p.id == request.packId)
+      let widgetName = this._widgets.find(w => w.id == request.widgetId).name
+      pack.widgets.push({id: request.widgetId, name: widgetName, quantity: request.quantity})
+
+      return Observable.of(null).delay(1)//3000)
+    }
+
+    this.fail = false
+    return Observable.throw('Could not add this widget').materialize().delay(3000).dematerialize()
+  }
+
+  removeWidget(request: ApiRemoveWidgetRequest): Observable<void> {
+    if(!this.fail) {
+      this.fail = true
+      let pack = this._packs.find(p => p.id == request.packId)
+
+      let i = pack.widgets.findIndex(w => w.id == request.widgetId)
+      pack.widgets.splice(i, 1)
+      
+      return Observable.of(null).delay(1)//3000)
+    }
+
+    this.fail = false
+    return Observable.throw('Could not remove this widget').materialize().delay(3000).dematerialize()
+  }
+
+  updateWidget(request: ApiUpdateWidgetRequest): Observable<void> {
+    if(!this.fail) {
+      this.fail = true
+      let pack = this._packs.find(p => p.id == request.packId)
+      let widget = pack.widgets.find(w => w.id == request.widgetId)
+      widget.quantity = request.quantity
+      
+      return Observable.of(null).delay(1)//3000)
+    }
+      
+    this.fail = false
+    return Observable.throw('Could not update this widget').materialize().delay(3000).dematerialize()
   }
 }

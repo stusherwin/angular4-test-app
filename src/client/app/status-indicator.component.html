@@ -3,7 +3,7 @@
   <i *ngIf="model.isSuccess" class="status icon-ok"></i>
   <span *ngIf="model.isError">
     <abbr class="fail" [title]="model.errorMessage"><i class="status icon-attention"></i></abbr>
-    <a class="button main" (click)="model.retry()"><i class="icon-cw"></i>Retry</a>
+    <button class="button main" (click)="model.retry()" [disabled]="retryDisabled"><i class="icon-cw"></i>Retry</button>
     <a class="cancel" (click)="model.abandon()"><i class="icon-cancel"></i></a>
   </span>
 </span>

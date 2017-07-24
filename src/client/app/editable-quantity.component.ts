@@ -3,7 +3,7 @@ import { EditModel, EditService, ReadOnlyService } from './common'
 import { Observable } from 'rxjs/Observable'
 import { Subscription } from 'rxjs/Subscription'
 
-export class PriceEditModel extends EditModel {
+export class QuantityEditModel extends EditModel {
   editingValue: string
 
   get potentialValue(): number {
@@ -20,7 +20,7 @@ export class PriceEditModel extends EditModel {
     public value: number
   ) {
     super(key, editService, readOnlyService, _confirm, _done, _abandon)
-    this.editingValue = this.value.toFixed(2)
+    this.editingValue = this.value.toFixed(0)
   }
 
   protected success() {
@@ -30,17 +30,17 @@ export class PriceEditModel extends EditModel {
 
   protected clear() {
     super.clear()
-    this.editingValue = this.value.toFixed(2)
+    this.editingValue = this.value.toFixed(0)
   }
 }
 
 @Component({
-  selector: 'editable-price',
-  templateUrl: './editable-price.component.html',
+  selector: 'editable-quantity',
+  templateUrl: './editable-quantity.component.html',
 })
-export class EditablePriceComponent implements AfterViewInit, OnDestroy {
+export class EditableQuantityComponent implements AfterViewInit, OnDestroy {
   @Input()
-  model: PriceEditModel
+  model: QuantityEditModel
 
   @ViewChildren('input')
   input: QueryList<ElementRef>

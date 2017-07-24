@@ -3,6 +3,8 @@
 @successBackground: lighten(desaturate(@success, 5%), 30%);
 @error: #d00;
 @errorBackground: lighten(desaturate(@error, 30%), 45%);
+@warning: #F7A000;
+@warningBackground: #FFDC95;
 @formBackground: #d5e4ed;
 @buttonMainColor: #337ab7;
 @buttonColor: lighten(desaturate(@buttonMainColor, 50%), 20%);
@@ -54,6 +56,7 @@ a {
 }
 
 .button {
+  white-space: nowrap;
   border-radius: 4px;
   text-decoration: none;
   color: white;
@@ -77,6 +80,16 @@ a {
      background: lighten(@buttonMainColor, 10%);
      border-color: @buttonMainColor;
     } 
+  }
+}
+
+button.button {
+  font-size: inherit;
+  &[disabled], &[disabled]:hover {
+    background: #aaa;
+    border-color: #bbb;
+    cursor: default;
+    color: #eaeaea;
   }
 }
 
@@ -106,15 +119,23 @@ input {
   }
 }
 
+select {
+  font-size: inherit;
+  margin-left: -4px;
+  margin-top: 1px;
+}
+
 .editable-value {
   position: relative;
 
   .editable-value-display-read-only {
     color: #aaa;
+    white-space: nowrap;
   }
 
   .editable-value-display {
     cursor: pointer;
+    white-space: nowrap;
     
     span {
       border-bottom: 1px dashed #bbb;
@@ -165,6 +186,8 @@ input {
   }
 
   .editable-value-edit {
+    white-space: nowrap;
+    z-index: 1;
     background: @formBackground;
     border-bottom: 1px solid @formBackground;
     display: inline;
@@ -182,5 +205,25 @@ input {
     &.error {
       background: @errorBackground;
     }
+
+    &.submitted.ng-invalid {
+      background: @warningBackground;
+    }
   }
+}
+
+.fail {
+  color: @error;
+  // margin-right: 10px;
+  cursor: help;
+}
+
+.warn {
+  color: @warning;
+  // margin-right: 10px;
+  cursor: help;
+}
+
+.read-only {
+  color: #aaa;
 }

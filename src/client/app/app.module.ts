@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { StatusIndicatorComponent } from './status-indicator.component';
 import { EditableTextComponent } from './editable-text.component';
 import { EditablePriceComponent } from './editable-price.component';
+import { EditableQuantityComponent } from './editable-quantity.component';
 import { WidgetsComponent } from './widgets.component'
 import { PacksComponent } from './packs.component'
 import { HomeComponent } from './home.component'
@@ -17,6 +18,7 @@ import { HomeComponent } from './home.component'
     StatusIndicatorComponent,
     EditableTextComponent,
     EditablePriceComponent,
+    EditableQuantityComponent,
     WidgetsComponent,
     PacksComponent,
     HomeComponent

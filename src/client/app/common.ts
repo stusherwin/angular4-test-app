@@ -14,14 +14,23 @@ export interface IReadOnly {
 export class ReadOnlyService implements IReadOnly {
   private _isReadOnly = false
 
-  get isReadOnly() { return this._isReadOnly }
+  get isReadOnly() { return (this._parent && this._parent.isReadOnly) || this._isReadOnly }
 
-  readOnly() {
-    this._isReadOnly = true
+  constructor(private _parent?: ReadOnlyService) {
   }
 
-  readWrite() {
+  readOnly(propogate: boolean = true) {
+    this._isReadOnly = true
+    if(propogate && this._parent) {
+      this._parent.readOnly()
+    }
+  }
+
+  readWrite(propogate: boolean = true) {
     this._isReadOnly = false
+    if(propogate && this._parent) {
+      this._parent.readWrite()
+    }
   }
 }
 
@@ -30,6 +39,7 @@ export class EditService {
   private _currentlyEditingSubject = new Subject<string>()
   
   startEdit(item: IKeyed) {
+    console.log(item.key);
     this._currentlyEditingKey = item.key
     this._currentlyEditingSubject.next(item.key)
   }
@@ -107,9 +117,10 @@ export class ActionModel implements IKeyed, IReadOnly {
 
   protected success() {
     this.status = 'success'
+    this._readOnlyService.readWrite()    
   }
 
-  private error(errorMessage: string) {
+  protected error(errorMessage: string) {
     this.status = 'error'
     this.errorMessage = errorMessage
     this._readOnlyService.readWrite()    
@@ -124,7 +135,6 @@ export class ActionModel implements IKeyed, IReadOnly {
     this.status = null
     this.errorMessage = null
     this._editService.endEdit(this)
-    this._readOnlyService.readWrite()    
   }
 
   protected retry() {
@@ -134,6 +144,24 @@ export class ActionModel implements IKeyed, IReadOnly {
   protected abandon() {
     this.clear()
     this._abandon()
+  }
+}
+
+export class AddModel extends ActionModel {
+  constructor(
+    key: string,
+    editService: EditService,
+    readOnlyService: ReadOnlyService,
+    _confirm: () => Observable<any>,
+    _done: () => void,
+    _abandon: () => void,
+  ) {
+    super(key, editService, readOnlyService, _confirm, _done, _abandon)
+  }
+
+  protected error(errorMessage: string) {
+    super.error(errorMessage)
+    this._readOnlyService.readOnly(false)
   }
 }
 

@@ -1,12 +1,11 @@
 <div class="editable-value">
   <div class="editable-value-display" (click)="model.start()" *ngIf="!model.editing && !model.isReadOnly">
-    <span>&pound;{{model.value.toFixed(2)}}</span>
+    <span>{{model.value.toFixed(0)}}</span>
   </div>
   <div class="editable-value-display-read-only" *ngIf="!model.editing && model.isReadOnly">
-    <span>&pound;{{model.value.toFixed(2)}}</span>
+    <span>{{model.value.toFixed(0)}}</span>
   </div>
   <div class="editable-value-edit" *ngIf="model.editing" [ngClass]="{success: model.isSuccess, 'error': model.isError}">
-    &pound;
     <input type="text" #input class="number" [(ngModel)]="model.editingValue" />
     <a class="button main" *ngIf="!model.status" (click)="model.confirm()"><i class="icon-ok"></i>Done</a>
     <a class="cancel" *ngIf="!model.status" (click)="model.cancel()"><i class="icon-cancel"></i></a>
